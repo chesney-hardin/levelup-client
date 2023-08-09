@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { getEvents } from "../../managers/EventManager.js"
+import { deleteEvent, getEvents } from "../../managers/EventManager.js"
 import { Link, useNavigate } from "react-router-dom"
 
 export const EventList = (props) => {
@@ -27,7 +27,8 @@ export const EventList = (props) => {
                         event?.attendees.length !== 0 ?
                         event.attendees.map(gamer => {return gamer.full_name})
                         : `No one is attending this event`}</div> }
-                        <Link to={`/update-event/${event.id}`}>Update this event</Link>
+                        <Link to={`/update-event/${event.id}`}>Update</Link>
+                        <button onClick={() => deleteEvent(event.id).then(() => getEvents().then(data => setEvents(data)))} >Delete</button>
                         <div>================================================</div>
                     </section>
                 })
