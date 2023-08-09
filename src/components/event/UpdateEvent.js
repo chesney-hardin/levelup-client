@@ -1,21 +1,26 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { getGames } from '../../managers/GameManager.js'
-import { createEvent } from '../../managers/EventManager.js'
+import { updateEvent, getEventById } from '../../managers/EventManager.js'
 
 
-export const EventForm = () => {
+export const UpdateEvent = () => {
     const navigate = useNavigate()
     const [games, setGames] = useState([])
+    const { eventId } = useParams()
 
-    const [currentEvent, setCurrentEvent] = useState({
-        gameId: 0,
-        date: ""
-    })
+    const [currentEvent, setCurrentEvent] = useState({})
 
     useEffect(() => {
         getGames().then(data => setGames(data))
     }, [])
+    useEffect(() => {
+        if(eventId) {
+            getEventById(eventId).then((res) => {
+                setCurrentEvent(res)
+            })
+        }
+    }, [eventId])
 
     const changeEventState = (domEvent) => {
          // Create a new object with the same properties and values as currentEvent
@@ -31,7 +36,7 @@ export const EventForm = () => {
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="name">Game: </label>
-                    <select value={currentEvent.gameId} name="gameId"
+                    <select value={currentEvent?.game?.id} name="game"
                         onChange={changeEventState
                         } >
                         <option value="0">Select Game</option>
@@ -58,16 +63,16 @@ export const EventForm = () => {
                     evt.preventDefault()
 
                     const event = {
-                        game: currentEvent.gameId,
+                        id:currentEvent.id,
+                        game: parseInt(currentEvent.game),
                         date: currentEvent.date
                     }
 
                     // Send POST request to your API
-                    createEvent(event)
+                    updateEvent(event)
                         .then(() => navigate("/events"))
                 }}
-                className="btn btn-primary btn-2 btn-sep">Create</button>
+                className="btn btn-primary btn-2 btn-sep">Update</button>
         </form>
     )
 }
-

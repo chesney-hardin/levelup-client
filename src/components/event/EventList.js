@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { getEvents } from "../../managers/EventManager.js"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export const EventList = (props) => {
     const [ events, setEvents ] = useState([])
@@ -27,6 +27,7 @@ export const EventList = (props) => {
                         event?.attendees.length !== 0 ?
                         event.attendees.map(gamer => {return gamer.full_name})
                         : `No one is attending this event`}</div> }
+                        <Link to={`/update-event/${event.id}`}>Update this event</Link>
                         <div>================================================</div>
                     </section>
                 })
